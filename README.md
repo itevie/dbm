@@ -1,7 +1,18 @@
-# Tauri + React
+# Discord Bot Maker
+This is a temporary name for the project until I think of something better (tell me if you have an idea)  
 
-This template should help get you started developing with Tauri and React in Vite.
+This is a simple app which allows you to create your own Discord bots to do anything you like!  
 
-## Recommended IDE Setup
+It has a simple prograaming language, custom made (scratch-like block coding coming soon!).  
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+## Example Code
+Once you have created a command, you could do for example:
+```
+message.reply("Hello World! You said: " + message.content)
+```
+
+## Installation
+1. Download the repository
+2. Make sure you have: cargo, rust, node, npm installed
+3. In the main directory, run `npm install`
+4. You should then be able to run `npm run tauri dev`
