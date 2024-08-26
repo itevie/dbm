@@ -1,0 +1,93 @@
+:root {
+    /* ----- Colors ----- */
+    --color-sidebar: #1e1f22;
+    --color-background: #313338;
+}
+
+body {
+    margin: 0;
+
+    color: white;
+    background-color: var(--color-background);
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.app {
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.app-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.page-container {
+    flex: 1;
+    margin: 10px;
+}
+
+.header {
+    font-weight: bold;
+    font-size: 2em;
+    display: block;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row,
+.flex-col {
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.container {
+    background-color: #1e1f2299;
+
+    border-radius: 10px;
+
+    min-width: 50px;
+
+    padding: 10px 30px;
+}
+
+.button {
+    background-color: #5865F2;
+    color: white;
+
+    border: none;
+    border-radius: 10px;
+
+    padding: 5px 20px;
+
+    transition: 0.2s;
+}
+
+.button:hover {
+    filter: brightness(125%);
+}
+
+.jumbo {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
