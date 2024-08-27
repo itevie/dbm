@@ -27,8 +27,9 @@ export default function CommandsPage() {
     }, [settings]);
 
     async function createCommand() {
-        if (!settings.current_bot) return;
-        const command = await invoke("create_command", { botId: settings.current_bot, name: `${Math.random()}` }) as Command;
+        let name = prompt("Provide a name:");
+        if (!settings.current_bot || !name) return;
+        const command = await invoke("create_command", { botId: settings.current_bot, name }) as Command;
         dispatch(addCommand(command));
     }
 
@@ -68,11 +69,13 @@ export default function CommandsPage() {
                     }
                 </Container>
                 <div className="flex-1">
-                    {currentCommand && <>
-                        <HeaderText>{commands[currentCommand].name}</HeaderText>
-                        <Editor theme="vs-dark" onMount={e => onMount(e)} height={100} value={currentCode} />
-                    </>}
-                    <button onClick={save}>Save</button>
+                    {currentCommand &&
+                        <>
+                            <HeaderText>{commands[currentCommand].name}</HeaderText>
+                            <Editor theme="vs-dark" onMount={e => onMount(e)} height={400} value={currentCode} />
+                            <Button className="jumbo" onClick={save}>Save</Button>
+                        </>
+                    }
                 </div>
             </div>
         </>

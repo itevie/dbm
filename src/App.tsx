@@ -13,6 +13,8 @@ import { useDispatch } from 'react-redux';
 import { setSettings } from './stores/options';
 import { addBot } from './stores/bots';
 import { listen } from '@tauri-apps/api/event';
+import { setRunningBots } from './stores/runningBots';
+import { TauriEvents } from './types/tauri';
 
 function App() {
     const [currentPage, setCurrentPage] = useState<string>("home");
@@ -26,12 +28,12 @@ function App() {
             for (const bot of bots)
                 dispatch(addBot(bot));
 
-            listen("running_bots_update", data => {
-                console.log(data);
+            listen<TauriEvents["running_bots_update"]>("running_bots_update", data => {
+                dispatch(setRunningBots(data.payload.list));
             });
 
-            listen("error", data => {
-                console.error(data);
+            listen<TauriEvents["error"]>("error", data => {
+                console.error(data.payload.error);
             })
         })();
     });

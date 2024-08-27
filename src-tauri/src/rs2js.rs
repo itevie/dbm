@@ -13,6 +13,7 @@ macro_rules! tx_error {
 pub(crate) use tx_error;
 
 #[derive(serde::Serialize, Clone, Debug)]
+#[serde(untagged)]
 pub enum SenderType {
     RunningBotsUpdate(RunningBotsUpdate),
     Error(Error),

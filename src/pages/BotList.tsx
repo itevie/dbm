@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { addBot } from "../stores/bots";
 import { Bot, Settings } from "../types/structures";
 import { setSettings } from "../stores/options";
+import BotController from "../components/BotController";
 
 export default function BotList() {
     const dispatch = useDispatch();
@@ -30,9 +31,7 @@ export default function BotList() {
             <HeaderText>Bot List</HeaderText>
             {
                 Object.keys(bots).map(x => <>
-                    {bots[x].name}
-                    <button onClick={() => selectBot(bots[x].id)}>Select</button>
-                    <br />
+                    <BotController onSelect={selectBot} bot={parseInt(x)} />
                 </>)
             }
         </>

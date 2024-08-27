@@ -4,12 +4,14 @@ import { settingsSlice } from "./stores/options";
 import { botsSlice } from "./stores/bots";
 import { Root } from "react-dom/client";
 import { commandsSlice } from "./stores/commands";
+import { runningBotsSlice } from "./stores/runningBots";
 
 const store = configureStore({
     reducer: {
         settings: settingsSlice.reducer,
         bots: botsSlice.reducer,
-        commands: commandsSlice.reducer
+        commands: commandsSlice.reducer,
+        runningBots: runningBotsSlice.reducer
     }
 });
 

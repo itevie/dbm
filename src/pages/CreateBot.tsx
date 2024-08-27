@@ -1,10 +1,12 @@
 import React, { useRef } from "react";
 import HeaderText from "../components/HeaderText";
+import Button from "../components/Button";
 import { invoke } from "@tauri-apps/api";
 import { setSettings } from "../stores/options";
 import { useDispatch } from "react-redux";
 import { addBot } from "../stores/bots";
 import { Bot } from "../types/structures";
+import Input from "../components/Input";
 
 export default function CreateBot() {
     const dispatch = useDispatch();
@@ -13,6 +15,11 @@ export default function CreateBot() {
 
 
     async function createBot() {
+        let name = nameRef.current?.value;
+        let token = tokenRef.current?.value;
+
+        console.log(name, token);
+
         let result = await invoke("create_bot", { name: nameRef.current?.value, token: tokenRef.current?.value }) as Bot;
         dispatch(addBot(result));
         dispatch(setSettings({ current_bot: result.id }));
@@ -22,10 +29,10 @@ export default function CreateBot() {
         <>
             <HeaderText>Create a new bot</HeaderText>
             <label>Name:</label>
-            <input ref={nameRef} />
+            <Input className="jumbo" ref={nameRef} />
             <label>Token:</label>
-            <input ref={tokenRef} />
-            <button onClick={createBot}>Create</button>
+            <Input className="jumbo" ref={tokenRef} />
+            <Button className="jumbo" onClick={createBot}>Create</Button>
         </>
     );
 }
