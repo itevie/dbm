@@ -2,6 +2,7 @@
     /* ----- Colors ----- */
     --color-sidebar: #1e1f22;
     --color-background: #313338;
+    --color-container: #1e1f2299;
 }
 
 body {
@@ -64,14 +65,25 @@ body {
 }
 
 .container {
-    background-color: #1e1f2299;
-
+    background-color: var(--color-container);
     border-radius: 10px;
 
     min-width: 50px;
 
-    padding: 20px;
+    padding: 15px;
     margin: 5px;
+}
+
+.container-item {
+    display: block;
+    width: 100%;
+
+    border-radius: 5px;
+    padding: 3px;
+}
+
+.container-item:hover {
+    background-color: #1e1f22;
 }
 
 .container.focused {
@@ -129,4 +141,17 @@ body {
     padding: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
+
+    min-width: 75px;
+}
+
+.editable:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.side-by-side {
+    display: flex;
+    width: 100%;
+    gap: 5px;
 }

@@ -9,12 +9,14 @@ pub struct Bot {
     pub name: String,
     pub token: String,
     pub description: String,
+    pub prefix: String,
 }
 
 #[derive(sqlx::FromRow, Debug, serde::Serialize)]
 pub struct Command {
     pub id: u8,
     pub name: String,
+    pub description: String,
     pub bot_id: u8,
     pub code_id: u8,
 }

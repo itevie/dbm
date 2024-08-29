@@ -1,10 +1,10 @@
-import React from "react";
+import React, { HTMLAttributes } from "react";
 import { ReactNode } from "react";
 
-export default function HeaderText(props: { children: ReactNode }) {
+export default function HeaderText({ children, ...props }: { children: ReactNode } & HTMLAttributes<HTMLLabelElement>) {
     return (
-        <label role="heading" className="header">
-            {props.children}
+        <label {...props} role="heading" className={`header ${props.className || ""}`}>
+            {children}
         </label>
     );
 }

@@ -82,6 +82,50 @@ impl BotManager {
             token
         )
     }
+
+    pub async fn set_prefix(&self, bot_id: u8, prefix: &str) -> Result<Bot, MakerError> {
+        execute_query!(
+            self,
+            Bot,
+            "UPDATE bots SET prefix = ?2 WHERE id = ?1 RETURNING *;",
+            fetch_one,
+            bot_id,
+            prefix
+        )
+    }
+
+    pub async fn set_name(&self, bot_id: u8, name: &str) -> Result<Bot, MakerError> {
+        execute_query!(
+            self,
+            Bot,
+            "UPDATE bots SET name = ?2 WHERE id = ?1 RETURNING *;",
+            fetch_one,
+            bot_id,
+            name
+        )
+    }
+
+    pub async fn set_description(&self, bot_id: u8, description: &str) -> Result<Bot, MakerError> {
+        execute_query!(
+            self,
+            Bot,
+            "UPDATE bots SET description = ?2 WHERE id = ?1 RETURNING *;",
+            fetch_one,
+            bot_id,
+            description
+        )
+    }
+
+    pub async fn set_token(&self, bot_id: u8, token: &str) -> Result<Bot, MakerError> {
+        execute_query!(
+            self,
+            Bot,
+            "UPDATE bots SET token = ?2 WHERE id = ?1 RETURNING *;",
+            fetch_one,
+            bot_id,
+            token
+        )
+    }
 }
 
 #[derive(Clone)]
@@ -132,7 +176,7 @@ impl CommandManager {
         )
     }
 
-    pub async fn update_code_piece(&self, id: u8, code_id: u8) -> Result<Command, MakerError> {
+    pub async fn set_code_piece(&self, id: u8, code_id: u8) -> Result<Command, MakerError> {
         execute_query!(
             self,
             Command,
@@ -140,6 +184,32 @@ impl CommandManager {
             fetch_one,
             code_id,
             id
+        )
+    }
+
+    pub async fn set_name(&self, command_id: u8, name: &str) -> Result<Command, MakerError> {
+        execute_query!(
+            self,
+            Command,
+            "UPDATE commands SET name = ?2 WHERE id = ?1 RETURNING *;",
+            fetch_one,
+            command_id,
+            name
+        )
+    }
+
+    pub async fn set_description(
+        &self,
+        command_id: u8,
+        description: &str,
+    ) -> Result<Command, MakerError> {
+        execute_query!(
+            self,
+            Command,
+            "UPDATE commands SET description = ?2 WHERE id = ?1 RETURNING *;",
+            fetch_one,
+            command_id,
+            description
         )
     }
 }
@@ -159,7 +229,7 @@ impl CodePieceManager {
         )
     }
 
-    pub async fn create_with(&self, code: &str) -> Result<CodePiece, MakerError> {
+    pub async fn _create_with(&self, code: &str) -> Result<CodePiece, MakerError> {
         execute_query!(
             self,
             CodePiece,

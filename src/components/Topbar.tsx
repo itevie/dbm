@@ -21,7 +21,7 @@ export default function Topbar({ page }: { page: string }) {
     return (
         <div className="topbar">
             <div className="topbar-left">
-                <b>{page}</b>
+                <b>{{ "bots": "Bot List", "bot-settings": "Current Bot Settings", "home": "Home", "commands": "Commands" }[page] || page}</b>
             </div>
             <div className="topbar-right">
                 {runningBots.includes(settings.current_bot ?? -1)

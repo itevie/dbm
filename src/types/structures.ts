@@ -2,6 +2,7 @@ export interface Bot {
     id: number,
     name: string,
     description: string,
+    prefix: string,
     token: string,
 }
 
@@ -14,6 +15,7 @@ export interface Command {
     name: string,
     bot_id: number,
     code_id: number | null,
+    description: string,
 }
 
 export interface CodePiece {

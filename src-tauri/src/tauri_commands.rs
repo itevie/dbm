@@ -39,6 +39,42 @@ pub async fn create_bot(
 }
 
 #[tauri::command]
+pub async fn set_bot_prefix(
+    id: u8,
+    prefix: &str,
+    db: tauri::State<'_, Database>,
+) -> Result<Bot, String> {
+    unwrap!(db.inner().bots.set_prefix(id, prefix).await)
+}
+
+#[tauri::command]
+pub async fn set_bot_name(
+    id: u8,
+    name: &str,
+    db: tauri::State<'_, Database>,
+) -> Result<Bot, String> {
+    unwrap!(db.inner().bots.set_name(id, name).await)
+}
+
+#[tauri::command]
+pub async fn set_bot_description(
+    id: u8,
+    description: &str,
+    db: tauri::State<'_, Database>,
+) -> Result<Bot, String> {
+    unwrap!(db.inner().bots.set_description(id, description).await)
+}
+
+#[tauri::command]
+pub async fn set_bot_token(
+    id: u8,
+    token: &str,
+    db: tauri::State<'_, Database>,
+) -> Result<Bot, String> {
+    unwrap!(db.inner().bots.set_token(id, token).await)
+}
+
+#[tauri::command]
 pub async fn run_bot(
     id: u8,
     db: tauri::State<'_, Database>,
@@ -94,7 +130,7 @@ pub async fn create_code_piece(
     unwrap!(
         db.inner()
             .commands
-            .update_code_piece(command_id, result.id)
+            .set_code_piece(command_id, result.id)
             .await
     )?;
     Ok(result)
@@ -112,6 +148,24 @@ pub async fn set_code_piece(
     db: tauri::State<'_, Database>,
 ) -> Result<CodePiece, String> {
     unwrap!(db.inner().code_pieces.set(id, code).await)
+}
+
+#[tauri::command]
+pub async fn set_command_name(
+    id: u8,
+    name: &str,
+    db: tauri::State<'_, Database>,
+) -> Result<Command, String> {
+    unwrap!(db.inner().commands.set_name(id, name).await)
+}
+
+#[tauri::command]
+pub async fn set_command_description(
+    id: u8,
+    description: &str,
+    db: tauri::State<'_, Database>,
+) -> Result<Command, String> {
+    unwrap!(db.inner().commands.set_description(id, description).await)
 }
 
 // ----- Settings Commands -----

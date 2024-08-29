@@ -72,6 +72,12 @@ async fn main() {
             get_code_piece,
             run_bot,
             stop_bot,
+            set_bot_description,
+            set_bot_name,
+            set_bot_prefix,
+            set_command_name,
+            set_command_description,
+            set_bot_token
         ])
         .setup(|app| {
             let app_handle = app.handle();
