@@ -26,7 +26,8 @@ export function basicInputModel(name: string, body: ReactNode = "", onSubmit: (r
                 type: "error",
                 onClick: d => {
                     d.close();
-                }
+                },
+                key: "esc"
             },
             {
                 name: "submit",
@@ -34,7 +35,8 @@ export function basicInputModel(name: string, body: ReactNode = "", onSubmit: (r
                 onClick: d => {
                     onSubmit(d.inputData["result"] || "");
                     d.close();
-                }
+                },
+                key: "enter"
             }
         ]
     })

@@ -12,6 +12,7 @@ export interface ModelButtonInstance {
     displayName?: string,
     onClick: (data: ModelButtonInstanceClickData) => void,
     type: "primary" | "secondary" | "error" | "success",
+    key?: "esc" | "enter"
 }
 
 export interface ModelInputInstance {
@@ -34,6 +35,30 @@ export let popModel: () => void = () => { };
 export default function ModelManager() {
     const [currentModel, setCurrentModel] = useState<ModelInstance | null>(null);
     const [currentInputData, setCurrentInputData] = useState<{ [key: string]: string }>({});
+
+    document.addEventListener("keydown", e => {
+        if (!currentModel) return;
+
+        if (e.key === "Escape") {
+            for (const button of currentModel.buttons ?? []) {
+                if (button.key === "esc") {
+                    button.onClick({
+                        close: () => popModel(),
+                        inputData: currentInputData
+                    });
+                }
+            }
+        } else if (e.key === "Enter") {
+            for (const button of currentModel.buttons ?? []) {
+                if (button.key === "enter") {
+                    button.onClick({
+                        close: () => popModel(),
+                        inputData: currentInputData
+                    });
+                }
+            }
+        }
+    });
 
     useEffect(() => {
         const updateModel = () => {
