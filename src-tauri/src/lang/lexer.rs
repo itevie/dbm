@@ -1,6 +1,6 @@
 use crate::errors::{MakerError, MakerErrorType};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub enum TokenType {
     // ----- Literals -----
     Identifier,
@@ -16,15 +16,25 @@ pub enum TokenType {
     OpenCurly,
     CloseCurly,
 
+    // ----- Operators -----
+    Logical(LogicalOperator),
+
     // ----- Keywords -----
     Var,
     Do,
     End,
     If,
+    Else,
 
     // ----- Special -----
     EOF,
     None,
+}
+
+#[derive(Debug, Copy, Clone)]
+pub enum LogicalOperator {
+    Eq,
+    Neq,
 }
 
 #[derive(Debug, Clone)]
@@ -111,6 +121,7 @@ pub fn lex(contents: String, context: String) -> Result<Vec<Token>, MakerError> 
                     "do" => Some(TokenType::Do),
                     "end" => Some(TokenType::End),
                     "if" => Some(TokenType::If),
+                    "else" => Some(TokenType::Else),
                     _ => None,
                 };
 
@@ -158,16 +169,38 @@ pub fn lex(contents: String, context: String) -> Result<Vec<Token>, MakerError> 
             }
             // Others
             _ => {
-                let symbol_type = match chars[0] {
-                    '(' => TokenType::OpenBrace,
-                    ')' => TokenType::CloseBrace,
-                    '{' => TokenType::OpenCurly,
-                    '}' => TokenType::CloseCurly,
-                    '.' => TokenType::Dot,
-                    ',' => TokenType::Comma,
-                    '=' => TokenType::Assign,
-                    _ => TokenType::None,
-                };
+                let mut symbol_type: TokenType = TokenType::None;
+
+                // Check 2 character long tokens
+                if chars.len() >= 2 {
+                    symbol_type = match chars[0] {
+                        '!' => match chars[1] {
+                            '=' => TokenType::Logical(LogicalOperator::Neq),
+                            _ => TokenType::None,
+                        },
+                        '=' => match chars[1] {
+                            '=' => TokenType::Logical(LogicalOperator::Eq),
+                            _ => TokenType::None,
+                        },
+                        _ => TokenType::None,
+                    };
+                    if !matches!(symbol_type, TokenType::None) {
+                        eat!(current_char, chars);
+                    }
+                }
+
+                if matches!(symbol_type, TokenType::None) {
+                    symbol_type = match chars[0] {
+                        '(' => TokenType::OpenBrace,
+                        ')' => TokenType::CloseBrace,
+                        '{' => TokenType::OpenCurly,
+                        '}' => TokenType::CloseCurly,
+                        '.' => TokenType::Dot,
+                        ',' => TokenType::Comma,
+                        '=' => TokenType::Assign,
+                        _ => TokenType::None,
+                    };
+                }
 
                 // Check if nothing was found
                 if matches!(symbol_type, TokenType::None) {

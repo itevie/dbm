@@ -155,3 +155,8 @@ body {
     width: 100%;
     gap: 5px;
 }
+
+.blockly-container {
+    width: 500px;
+    height: 500px;
+}

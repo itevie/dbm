@@ -1,6 +1,9 @@
 use crate::errors::{MakerError, MakerErrorType};
 
-use super::{lexer::Location, values::RuntimeValue};
+use super::{
+    lexer::Location,
+    values::{self, RuntimeValue},
+};
 use std::collections::HashMap;
 
 pub struct Scope {
@@ -10,7 +13,10 @@ pub struct Scope {
 impl Scope {
     pub fn new() -> Scope {
         Scope {
-            variables: HashMap::new(),
+            variables: HashMap::from([
+                ("true".to_string(), values::Boolean::make(true)),
+                ("false".to_string(), values::Boolean::make(false)),
+            ]),
         }
     }
 

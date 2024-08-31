@@ -3,7 +3,7 @@ use crate::errors::{MakerError, MakerErrorType};
 use super::{
     nodes::Expression,
     scope::Scope,
-    values::{self, Null, RuntimeValue},
+    values::{self, Boolean, Null, RuntimeValue},
 };
 
 type E = Result<RuntimeValue, MakerError>;
@@ -108,6 +108,39 @@ impl Interpreter {
                             MakerErrorType::RuntimeError,
                         ))
                     }
+                }
+            }
+            Expression::Logical(expr) => {
+                let left = evaluate!(self, *expr.left)?;
+                let right = evaluate!(self, *expr.right)?;
+
+                // Check if types are the same
+                if left.type_name() != right.type_name() {
+                    return Ok(Boolean::make(false));
+                }
+
+                let result = match (left, right) {
+                    (RuntimeValue::Boolean(l), RuntimeValue::Boolean(r)) => l.value == r.value,
+                    (RuntimeValue::StringValue(l), RuntimeValue::StringValue(r)) => {
+                        l.value == r.value
+                    }
+                    (RuntimeValue::Number(l), RuntimeValue::Number(r)) => l.value == r.value,
+                    (RuntimeValue::Null(_), _) => true,
+                    _ => false,
+                };
+
+                Ok(Boolean::make(result))
+            }
+            Expression::IfBlock(block) => {
+                let test = evaluate!(self, *block.test)?.is_truthy();
+                println!("{}", test);
+
+                if test {
+                    evaluate!(self, Expression::Block(block.success))
+                } else if let Some(alternate) = block.alternate {
+                    evaluate!(self, *alternate)
+                } else {
+                    Ok(values::Null::make())
                 }
             }
             // ----- Literals -----

@@ -12,6 +12,7 @@ pub enum RuntimeValue {
     NativeFunction(NativeFunction),
     Future(MakerFuture),
     Object(Object),
+    Boolean(Boolean),
 }
 
 unsafe impl Send for RuntimeValue {}
@@ -26,6 +27,28 @@ impl RuntimeValue {
             RuntimeValue::Number(_) => "number",
             RuntimeValue::Object(_) => "object",
             RuntimeValue::StringValue(_) => "string",
+            RuntimeValue::Boolean(_) => "boolean",
+        }
+    }
+
+    pub fn is_truthy(&self) -> bool {
+        match self {
+            RuntimeValue::Number(v) => v.value > 0f64,
+            RuntimeValue::StringValue(v) => v.value.len() != 0,
+            RuntimeValue::Boolean(v) => v.value,
+            _ => false,
+        }
+    }
+
+    pub fn to_string(&self) -> String {
+        match self {
+            RuntimeValue::Future(_) => "future".to_string(),
+            RuntimeValue::NativeFunction(_) => "function".to_string(),
+            RuntimeValue::Null(_) => "null".to_string(),
+            RuntimeValue::Number(v) => v.value.to_string(),
+            RuntimeValue::Object(_) => "object".to_string(),
+            RuntimeValue::StringValue(v) => v.value.to_string(),
+            RuntimeValue::Boolean(v) => v.value.to_string(),
         }
     }
 }
@@ -58,6 +81,17 @@ pub struct StringValue {
 impl StringValue {
     pub fn make(value: String) -> RuntimeValue {
         RuntimeValue::StringValue(StringValue { value })
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Boolean {
+    pub value: bool,
+}
+
+impl Boolean {
+    pub fn make(value: bool) -> RuntimeValue {
+        RuntimeValue::Boolean(Boolean { value })
     }
 }
 

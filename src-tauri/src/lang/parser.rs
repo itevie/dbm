@@ -19,6 +19,7 @@ impl Parser {
     }
 
     fn eat(&mut self) -> Token {
+        println!(" eated {:?}", self.at());
         self.tokens.remove(0)
     }
 
@@ -73,7 +74,36 @@ impl Parser {
     fn parse_statement(&mut self) -> E {
         match self.at().token_type {
             TokenType::Var => self.parse_variable_declaration(),
-            _ => self.parse_call_expression(),
+
+            TokenType::If => {
+                let token = self.eat();
+                let test = self.parse_expression()?;
+                let block = self.parse_block()?;
+                let alternate = if matches!(self.at().token_type, TokenType::Else) {
+                    self.eat();
+                    if matches!(self.at().token_type, TokenType::Do) {
+                        Some(Box::from(Expression::Block(self.parse_block()?)))
+                    } else if matches!(self.at().token_type, TokenType::If) {
+                        Some(Box::from(self.parse_statement()?))
+                    } else {
+                        return Err(MakerError::lang(
+                            "Expected if or do",
+                            self.at().location,
+                            MakerErrorType::ParserError,
+                        ));
+                    }
+                } else {
+                    None
+                };
+
+                Ok(Expression::IfBlock(nodes::IfBlock {
+                    test: Box::from(test),
+                    success: block,
+                    alternate,
+                    location: token.location,
+                }))
+            }
+            _ => self.parse_expression(),
         }
     }
 
@@ -93,7 +123,27 @@ impl Parser {
     }
 
     fn parse_expression(&mut self) -> E {
-        self.parse_call_expression()
+        match self.at().token_type {
+            _ => self.parse_logical_expression(),
+        }
+    }
+
+    fn parse_logical_expression(&mut self) -> E {
+        let left = self.parse_call_expression()?;
+
+        if let TokenType::Logical(logical) = self.at().token_type {
+            let operator = self.eat();
+            let right = self.parse_call_expression()?;
+
+            return Ok(Expression::Logical(nodes::Logical {
+                left: Box::from(left),
+                right: Box::from(right),
+                location: operator.location,
+                operator: logical,
+            }));
+        }
+
+        Ok(left)
     }
 
     fn parse_call_expression(&mut self) -> E {
@@ -119,7 +169,6 @@ impl Parser {
                 discriminant(&TokenType::CloseBrace),
                 "Expected closing of arguments",
             )?;
-            self.eat();
 
             // Done
             return Ok(Expression::Call(nodes::Call {
@@ -149,24 +198,25 @@ impl Parser {
         Ok(left)
     }
 
-    fn parse_block(&mut self) -> E {
+    fn parse_block(&mut self) -> Result<Block, MakerError> {
         let mut block = nodes::Block {
             nodes: vec![],
             location: self.at().location,
         };
 
         // Expect a {
-        self.expect(discriminant(&TokenType::OpenCurly), "Expected {")?;
+        self.expect(discriminant(&TokenType::Do), "Expected do")?;
 
         // Repeat until {
-        while !self.tokens.is_empty() && !matches!(self.at().token_type, TokenType::CloseCurly) {
+        while !self.tokens.is_empty() && !matches!(self.at().token_type, TokenType::End) {
             block.nodes.push(self.parse_expression()?);
+            println!("{:?}", self.at());
         }
 
         // Expect a )
-        self.expect(discriminant(&TokenType::CloseCurly), "Expected }")?;
+        self.expect(discriminant(&TokenType::End), "Expected end")?;
 
-        Ok(Expression::Block(block))
+        Ok(block)
     }
 
     fn parse_literal(&mut self) -> E {
@@ -197,7 +247,7 @@ impl Parser {
             }
             _ => {
                 return Err(MakerError::lang(
-                    format!("Cannot handle this: {}", self.at().value),
+                    format!("Cannot handle this: {:?}", self.at()),
                     self.at().location,
                     MakerErrorType::ParserError,
                 ))

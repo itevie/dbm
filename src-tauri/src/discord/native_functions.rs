@@ -63,6 +63,20 @@ macro_rules! get_arg {
             }
         }
     }};
+
+    ($args:ident, $index:expr) => {{
+        if $index >= $args.len() {
+            return Err(MakerError::lang(
+                format!(
+                    "Not enough args provided! Missing arg at argument {}",
+                    $index
+                ),
+                Location::no_location(),
+                MakerErrorType::RuntimeError,
+            ));
+        }
+        $args[$index].clone()
+    }};
 }
 
 struct MakerContext {
@@ -80,7 +94,7 @@ pub fn generate_from_message(ctx: Arc<Context>, msg: Arc<Message>) -> RuntimeVal
                 |ctx2: Arc<MakerContext>, args: Vec<RuntimeValue>| async move {
                     let result = ctx2
                         .msg
-                        .reply(&ctx2.ctx.http, get_arg!(args, 0, StringValue).value)
+                        .reply(&ctx2.ctx.http, get_arg!(args, 0).to_string())
                         .await
                         .unwrap();
                     let _msg2 = generate_from_message(ctx2.ctx.clone(), Arc::from(result));
